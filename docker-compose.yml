@@ -1,0 +1,7 @@
+version: "3"
+services:
+  volume-cboard:
+    image: vinhanbui01/volume-cboard
+    env_file: .env
+    ports:
+      - "80:8000"
