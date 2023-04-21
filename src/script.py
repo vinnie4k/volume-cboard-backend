@@ -21,7 +21,7 @@ def get_weekly_flyers():
     utc = pytz.UTC
 
     for flyer in flyers:
-        date_string = flyer.get("startDate")
+        date_string = flyer.get("endDate")
         date = utc.localize(datetime.strptime(date_string, DATETIME_FORMAT))
         diff = date - utc.localize(datetime.now())
         if 0 <= diff.days < 7:
@@ -38,7 +38,7 @@ def get_past_flyers():
     utc = pytz.UTC
 
     for flyer in flyers:
-        date_string = flyer.get("startDate")
+        date_string = flyer.get("endDate")
         date = utc.localize(datetime.strptime(date_string, DATETIME_FORMAT))
         if utc.localize(datetime.now()) > date:
             past_flyers.append(flyer)
@@ -54,7 +54,7 @@ def get_upcoming_flyers():
     utc = pytz.UTC
 
     for flyer in flyers:
-        date_string = flyer.get("startDate")
+        date_string = flyer.get("endDate")
         date = utc.localize(datetime.strptime(date_string, DATETIME_FORMAT))
         if utc.localize(datetime.now()) < date:
             upcoming_flyers.append(flyer)
