@@ -1,5 +1,7 @@
 import json
+import random
 import script
+
 from flask import Flask, request
 
 app = Flask(__name__)
@@ -28,7 +30,52 @@ def default():
     """
     Default route that returns a welcome message
     """
-    return "Welcome to volume-cboard-backend"
+    return "Welcome to Vin's volume-cboard-backend"
+
+
+@app.route("/api/flyers/trending/")
+def fetch_trending_flyers():
+    """
+    This route fetches two flyers to be featured in trending
+    """
+    upcoming_flyers = script.get_upcoming_flyers()
+    if upcoming_flyers is None:
+        return failure_response("Unable to fetch flyers for trending")
+    trending_flyers = random.sample(upcoming_flyers, 2)
+    return success_response(trending_flyers)
+
+
+@app.route("/api/flyers/weekly/")
+def fetch_weekly_flyers():
+    """
+    This route fetches all weekly flyers
+    """
+    weekly_flyers = script.get_weekly_flyers()
+    if weekly_flyers is None:
+        return failure_response("Unable to fetch weekly flyers")
+    return success_response(weekly_flyers)
+
+
+@app.route("/api/flyers/past/")
+def fetch_past_flyers():
+    """
+    This route fetches all past flyers
+    """
+    past_flyers = script.get_past_flyers()
+    if past_flyers is None:
+        return failure_response("Unable to fetch past flyers")
+    return success_response(past_flyers)
+
+
+@app.route("/api/flyers/upcoming/")
+def fetch_upcoming_flyers():
+    """
+    This route fetches all upcoming flyers
+    """
+    upcoming_flyers = script.get_upcoming_flyers()
+    if upcoming_flyers is None:
+        return failure_response("Unable to fetch upcoming flyers")
+    return success_response(upcoming_flyers)
 
 
 @app.route("/api/organizations/<string:slug>/")
@@ -43,7 +90,7 @@ def fetch_specific_org(slug):
 
 
 @app.route("/api/organizations/")
-def fetch_organizations():
+def fetch_all_organizations():
     """
     This route fetches all organizations
     """
@@ -54,7 +101,7 @@ def fetch_organizations():
 
 
 @app.route("/api/flyers/")
-def fetch_flyers():
+def fetch_all_flyers():
     """
     This route fetches all flyers
     """

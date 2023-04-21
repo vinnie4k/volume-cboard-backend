@@ -1,4 +1,5 @@
 FROM python:3.9
+ENV TZ="America/New_York"
 
 RUN mkdir usr/app
 WORKDIR usr/app

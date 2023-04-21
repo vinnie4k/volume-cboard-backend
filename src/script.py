@@ -1,13 +1,64 @@
 from __future__ import print_function
 from constants import *
+from datetime import datetime
 
 import os.path
+import pytz
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+
+
+def get_weekly_flyers():
+    """
+    Returns a list of this week's flyers
+    """
+    flyers = get_flyers()
+    weekly_flyers = []
+    utc = pytz.UTC
+
+    for flyer in flyers:
+        date_string = flyer.get("startDate")
+        date = utc.localize(datetime.strptime(date_string, DATETIME_FORMAT))
+        diff = date - utc.localize(datetime.now())
+        if 0 <= diff.days < 7:
+            weekly_flyers.append(flyer)
+    return weekly_flyers
+
+
+def get_past_flyers():
+    """
+    Returns a list of all past flyers
+    """
+    flyers = get_flyers()
+    past_flyers = []
+    utc = pytz.UTC
+
+    for flyer in flyers:
+        date_string = flyer.get("startDate")
+        date = utc.localize(datetime.strptime(date_string, DATETIME_FORMAT))
+        if utc.localize(datetime.now()) > date:
+            past_flyers.append(flyer)
+    return past_flyers
+
+
+def get_upcoming_flyers():
+    """
+    Returns a list of all upcoming flyers
+    """
+    flyers = get_flyers()
+    upcoming_flyers = []
+    utc = pytz.UTC
+
+    for flyer in flyers:
+        date_string = flyer.get("startDate")
+        date = utc.localize(datetime.strptime(date_string, DATETIME_FORMAT))
+        if utc.localize(datetime.now()) < date:
+            upcoming_flyers.append(flyer)
+    return upcoming_flyers
 
 
 def get_slugs_org_map():
@@ -45,7 +96,6 @@ def get_org_from_slug(slug):
     """
     Returns one organization given a slug
     """
-    creds = get_creds()
     organizations = get_organizations()
 
     if organizations is None:
