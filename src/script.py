@@ -30,7 +30,7 @@ def get_daily_flyers():
 
 def get_weekly_flyers():
     """
-    Returns a list of this week's flyers
+    Returns a list of this week's flyers that are not today
     """
     flyers = get_flyers()
     weekly_flyers = []
@@ -40,7 +40,7 @@ def get_weekly_flyers():
         date_string = flyer.get("endDate")
         date = utc.localize(datetime.strptime(date_string, DATETIME_FORMAT))
         diff = date - utc.localize(datetime.now())
-        if 0 <= diff.days < 7:
+        if 0 <= diff.days < 7 and date.day != utc.localize(datetime.today()).day:
             weekly_flyers.append(flyer)
     return weekly_flyers
 
