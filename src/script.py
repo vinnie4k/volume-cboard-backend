@@ -12,6 +12,22 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 
+def get_daily_flyers():
+    """
+    Returns a list of upcoming flyers from today
+    """
+    flyers = get_upcoming_flyers()
+    daily_flyers = []
+    utc = pytz.UTC
+
+    for flyer in flyers:
+        date_string = flyer.get("endDate")
+        date = utc.localize(datetime.strptime(date_string, DATETIME_FORMAT))
+        if date.day == utc.localize(datetime.today()).day:
+            daily_flyers.append(flyer)
+    return daily_flyers
+
+
 def get_weekly_flyers():
     """
     Returns a list of this week's flyers

@@ -33,6 +33,17 @@ def default():
     return "Welcome to Vin's volume-cboard-backend"
 
 
+@app.route("/api/flyers/daily/")
+def fetch_daily_flyers():
+    """
+    This route fetches all flyers today
+    """
+    daily_flyers = script.get_daily_flyers()
+    if daily_flyers is None:
+        return failure_response("Unable to fetch daily flyers")
+    return success_response(daily_flyers)
+
+
 @app.route("/api/flyers/trending/")
 def fetch_trending_flyers():
     """
