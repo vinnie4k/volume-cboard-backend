@@ -144,6 +144,45 @@ def get_org_from_slug(slug):
                 return None
 
 
+def get_specific_flyers(ids):
+    """
+    Returns flyers given a list of IDs
+    """
+    creds = get_creds()
+
+    try:
+        service = build('sheets', 'v4', credentials=creds)
+
+        # Call the Sheets API
+        sheet = service.spreadsheets()
+        result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,
+                                    range=FLYERS_RANGE).execute()
+        values = result.get('values', [])
+
+        if not values:
+            print('No data found.')
+            return []
+
+        map = get_slugs_org_map()
+        flyers = []
+        for row in values:
+            if int(row[0]) in ids:
+                slugs = row[2].split(', ')
+                orgs = []
+                for slug in slugs:
+                    orgs.append(map.get(slug))
+
+                flyers.append({"id": row[0], "title": row[1],
+                               "organizations": orgs, "startDate": row[3],
+                               "endDate": row[4], "imageURL": row[5], "postURL": row[6],
+                               "location": row[7]})
+        return flyers
+
+    except HttpError as err:
+        print(err)
+        return None
+
+
 def get_flyers():
     """
     Returns all flyers

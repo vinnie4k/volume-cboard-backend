@@ -116,9 +116,18 @@ def fetch_all_flyers():
     """
     This route fetches all flyers
     """
-    flyers = script.get_flyers()
+    if request.data:
+        body = json.loads(request.data)
+        flyer_ids = body.get("flyers", [])
+        if flyer_ids != []:
+            flyers = script.get_specific_flyers(flyer_ids)
+        else:
+            flyers = script.get_flyers()
+    else:
+        flyers = script.get_flyers()
+
     if flyers is None:
-        return failure_response("Unable to fetch all flyers")
+        return failure_response("Unable to fetch flyers")
     return success_response(flyers)
 
 ### Main Script ###
