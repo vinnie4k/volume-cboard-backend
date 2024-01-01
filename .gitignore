@@ -3,3 +3,4 @@ token.json
 src/__pycache__
 *.env
 venv
+.DS_STORE
